@@ -75,6 +75,10 @@ target_link_libraries(octomap_server_nodelet ${PROJECT_NAME} ${LINK_LIBS})
 add_library(octomap_color_server_nodelet src/octomap_server_nodelet.cpp)
 target_link_libraries(octomap_color_server_nodelet ${PROJECT_NAME}_color ${LINK_LIBS})
 
+add_executable(pub src/pub.cpp)  
+target_link_libraries(pub
+                      ${catkin_LIBRARIES}
+)
 # install targets:
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_color
   octomap_server_node
