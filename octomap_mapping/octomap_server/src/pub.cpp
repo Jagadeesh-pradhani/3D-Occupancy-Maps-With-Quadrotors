@@ -13,6 +13,8 @@
 #include <octomap/octomap_types.h>
 #include <tf/transform_listener.h>
 #include <pcl_ros/transforms.h>
+#include <pcl/filters/voxel_grid.h>
+
 
 using namespace std;
 using namespace octomap;
@@ -29,7 +31,7 @@ sensor_msgs::PointCloud2 localMap_pcd;
 sensor_msgs::PointCloud2 globalMap_pcd;
 pcl::PointCloud<pcl::PointXYZ> cloudMap;   // The global map
 pcl::PointCloud<pcl::PointXYZ> cameraCloud; // The live point cloud from the camera
-
+pcl::PointCloud<pcl::PointXYZ> cloud_filtered;
 tf::TransformListener* tf_listener;
 
 void loadSavedMap(const std::string& map_file) {
@@ -89,9 +91,16 @@ void cameraPointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& input) {
         cloudMap.points.push_back(point);
     }
 
-    cloudMap.width = cloudMap.points.size();
-    cloudMap.height = 1;
-    cloudMap.is_dense = true;
+    // Voxel Grid Filtering
+    pcl::VoxelGrid<pcl::PointXYZ> voxel_filter;
+    
+    voxel_filter.setInputCloud(cloudMap.makeShared());
+    voxel_filter.setLeafSize(0.2f, 0.2f, 0.2f); // Set your desired leaf size here
+    voxel_filter.filter(cloud_filtered);
+
+    cloud_filtered.width = cloud_filtered.points.size();
+    cloud_filtered.height = 1;
+    cloud_filtered.is_dense = true;
 
     ROS_WARN("Updated global map with live camera data in world frame.");
 }
@@ -101,7 +110,7 @@ void pubSensedPoints() {
         return;
 
     // Publish the updated map as a ROS PointCloud2 message
-    pcl::toROSMsg(cloudMap, globalMap_pcd);
+    pcl::toROSMsg(cloud_filtered, globalMap_pcd);
     globalMap_pcd.header.frame_id = "world";
     _all_map_pub.publish(globalMap_pcd);
 }
