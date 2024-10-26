@@ -23,5 +23,14 @@
     <arg name="x" value="4" />
     <arg name="y" value="4" />
   </include>
-  <!-- <arg name="model" value="$(find hector_quadrotor_description)/urdf/quadrotor_hokuyo_utm30lx.gazebo.xacro"/>  -->
+
+  <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find drone_test)/config/config.rviz" />
+
+  <include file="$(find octomap_server)/launch/octomap_mapping.launch">
+  </include>
+  <include file="$(find drone_test)/launch/gmap.launch">
+  </include>
+  <node name="teleop" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" />
+
+
 </launch>
