@@ -79,6 +79,11 @@ add_executable(pub src/pub.cpp)
 target_link_libraries(pub
                       ${catkin_LIBRARIES}
 )
+
+add_executable(map_pub src/map_pub.cpp)  
+target_link_libraries(map_pub
+                      ${catkin_LIBRARIES}
+)
 # install targets:
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_color
   octomap_server_node

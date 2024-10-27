@@ -23,5 +23,7 @@
     <arg name="x" value="4" />
     <arg name="y" value="4" />
   </include>
+  
+
   <!-- <arg name="model" value="$(find hector_quadrotor_description)/urdf/quadrotor_hokuyo_utm30lx.gazebo.xacro"/>  -->
 </launch>
